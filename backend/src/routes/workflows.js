@@ -6,77 +6,127 @@ const router = express.Router();
 const workflows = [];
 const executions = [];
 
-/*
-GET all workflows
-*/
+// Helper: find workflow by ID
+function findWorkflow(id) {
+  return workflows.find((w) => w.id === id);
+}
+
+// GET /workflows - List all workflows
 router.get("/", (req, res) => {
   res.json(workflows);
 });
 
-/*
-CREATE workflow
-*/
+// POST /workflows - Create new workflow
 router.post("/", (req, res) => {
   const { name } = req.body;
 
+  if (!name || typeof name !== "string" || !name.trim()) {
+    return res.status(400).json({ error: "Workflow name is required" });
+  }
+
   const workflow = {
     id: Date.now().toString(),
-    name,
+    name: name.trim(),
     steps: [],
+    createdAt: new Date().toISOString(),
   };
 
   workflows.push(workflow);
-
-  res.json(workflow);
+  res.status(201).json(workflow);
 });
 
-/*
-GET workflow by id
-*/
+// GET /workflows/executions - List all executions
+router.get("/executions", (req, res) => {
+  res.json(executions);
+});
+
+// GET /workflows/:id - Get single workflow
 router.get("/:id", (req, res) => {
-  const workflow = workflows.find((w) => w.id === req.params.id);
+  const workflow = findWorkflow(req.params.id);
 
   if (!workflow) {
-    return res.status(404).json({
-      error: "Workflow not found",
-    });
+    return res.status(404).json({ error: "Workflow not found" });
   }
 
   res.json(workflow);
 });
 
-/*
-ADD step to workflow
-*/
-router.post("/:id/steps", (req, res) => {
-  const workflow = workflows.find((w) => w.id === req.params.id);
+// PUT /workflows/:id - Update workflow
+router.put("/:id", (req, res) => {
+  const workflow = findWorkflow(req.params.id);
 
   if (!workflow) {
-    return res.status(404).json({
-      error: "Workflow not found",
-    });
+    return res.status(404).json({ error: "Workflow not found" });
+  }
+
+  const { name } = req.body;
+
+  if (name && typeof name === "string" && name.trim()) {
+    workflow.name = name.trim();
+  }
+
+  res.json(workflow);
+});
+
+// DELETE /workflows/:id - Delete workflow
+router.delete("/:id", (req, res) => {
+  const index = workflows.findIndex((w) => w.id === req.params.id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Workflow not found" });
+  }
+
+  workflows.splice(index, 1);
+  res.status(204).send();
+});
+
+// POST /workflows/:id/steps - Add step to workflow
+router.post("/:id/steps", (req, res) => {
+  const workflow = findWorkflow(req.params.id);
+
+  if (!workflow) {
+    return res.status(404).json({ error: "Workflow not found" });
+  }
+
+  const { name } = req.body;
+
+  if (!name || typeof name !== "string" || !name.trim()) {
+    return res.status(400).json({ error: "Step name is required" });
   }
 
   const step = {
     id: Date.now().toString(),
-    name: req.body.name,
+    name: name.trim(),
   };
 
   workflow.steps.push(step);
-
-  res.json(step);
+  res.json(workflow);
 });
 
-/*
-EXECUTE workflow
-*/
-router.post("/:id/execute", async (req, res) => {
-  const workflow = workflows.find((w) => w.id === req.params.id);
+// DELETE /workflows/:id/steps/:stepId - Remove step from workflow
+router.delete("/:id/steps/:stepId", (req, res) => {
+  const workflow = findWorkflow(req.params.id);
 
   if (!workflow) {
-    return res.status(404).json({
-      error: "Workflow not found",
-    });
+    return res.status(404).json({ error: "Workflow not found" });
+  }
+
+  const stepIndex = workflow.steps.findIndex((s) => s.id === req.params.stepId);
+
+  if (stepIndex === -1) {
+    return res.status(404).json({ error: "Step not found" });
+  }
+
+  workflow.steps.splice(stepIndex, 1);
+  res.json(workflow);
+});
+
+// POST /workflows/:id/execute - Execute workflow
+router.post("/:id/execute", async (req, res) => {
+  const workflow = findWorkflow(req.params.id);
+
+  if (!workflow) {
+    return res.status(404).json({ error: "Workflow not found" });
   }
 
   const execution = {
@@ -84,7 +134,7 @@ router.post("/:id/execute", async (req, res) => {
     workflowId: workflow.id,
     workflowName: workflow.name,
     status: "running",
-    startedAt: new Date(),
+    startedAt: new Date().toISOString(),
     logs: [],
   };
 
@@ -93,27 +143,26 @@ router.post("/:id/execute", async (req, res) => {
   try {
     for (const step of workflow.steps) {
       execution.logs.push(`Executing step: ${step.name}`);
-      console.log(`Executing step: ${step.name}`);
-
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     execution.status = "success";
-    execution.finishedAt = new Date();
-
-    console.log("Workflow execution finished");
+    execution.finishedAt = new Date().toISOString();
 
     res.json({
       message: "Workflow executed successfully",
       executionId: execution.id,
+      status: "success",
     });
-
   } catch (err) {
     execution.status = "failed";
-    execution.finishedAt = new Date();
+    execution.finishedAt = new Date().toISOString();
+    execution.error = err.message;
 
     res.status(500).json({
       error: "Execution failed",
+      executionId: execution.id,
+      status: "failed",
     });
   }
 });

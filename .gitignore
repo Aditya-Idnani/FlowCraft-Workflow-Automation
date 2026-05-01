@@ -4,4 +4,4 @@ node_modules/
 .next/
 dist/
 build/
-backend/prisma/generated/
+backend/prisma/generated/.env.local

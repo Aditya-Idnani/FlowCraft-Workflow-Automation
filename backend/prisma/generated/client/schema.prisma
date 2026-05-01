@@ -1,0 +1,97 @@
+// FlowCraft — Prisma Schema
+// Persists users, workflows, steps (nodes), edges, executions, and logs.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Users ─────────────────────────────────────────────
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  createdAt    DateTime   @default(now())
+  workflows    Workflow[]
+}
+
+// ── Workflows ─────────────────────────────────────────
+model Workflow {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Owner
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Schedule
+  schedulePreset String?
+  scheduleCron   String?
+  scheduleLabel  String?
+
+  // Relations
+  steps      Step[]
+  edges      Edge[]
+  executions Execution[]
+}
+
+// ── Steps (Nodes) ─────────────────────────────────────
+model Step {
+  id        String @id @default(cuid())
+  name      String
+  position  Int    @default(0) // ordering index
+  positionX Float  @default(0) // canvas layout
+  positionY Float  @default(0) // canvas layout
+  nodeType  String @default("action.log")
+  config    Json   @default("{}")
+
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+// ── Edges (Connections) ───────────────────────────────
+model Edge {
+  id           String @id @default(cuid())
+  source       String // step ID
+  sourceHandle String @default("right")
+  target       String // step ID
+  targetHandle String @default("left")
+
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+}
+
+// ── Executions ────────────────────────────────────────
+model Execution {
+  id          String    @id @default(cuid())
+  status      String    @default("running") // running | success | failed
+  triggeredBy String    @default("manual") // manual | schedule
+  startedAt   DateTime  @default(now())
+  finishedAt  DateTime?
+  error       String?
+
+  workflowId   String
+  workflowName String
+  workflow     Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  logs ExecutionLog[]
+}
+
+// ── Execution Logs ────────────────────────────────────
+model ExecutionLog {
+  id        String   @id @default(cuid())
+  message   String
+  level     String   @default("info") // info | success | error | warn
+  timestamp DateTime @default(now())
+
+  executionId String
+  execution   Execution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+}

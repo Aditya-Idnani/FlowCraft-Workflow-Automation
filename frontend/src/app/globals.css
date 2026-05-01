@@ -1,0 +1,435 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════
+   DARK THEME (default)
+   ═══════════════════════════════════════════════════ */
+:root,
+[data-theme="dark"] {
+  /* Base colors */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f0f0f;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-card-hover: rgba(255, 255, 255, 0.06);
+  --bg-glass: rgba(255, 255, 255, 0.05);
+  
+  /* Border colors */
+  --border-default: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --border-active: rgba(255, 255, 255, 0.15);
+  
+  /* Text colors */
+  --text-primary: #f5f5f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+  
+  /* Accent colors */
+  --accent-blue: #6366f1;
+  --accent-cyan: #22d3ee;
+  --accent-purple: #a855f7;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-yellow: #eab308;
+  --accent-amber: #f59e0b;
+  
+  /* Glow colors */
+  --glow-blue: rgba(99, 102, 241, 0.4);
+  --glow-cyan: rgba(34, 211, 238, 0.3);
+  --glow-purple: rgba(168, 85, 247, 0.35);
+  --glow-green: rgba(34, 197, 94, 0.4);
+  --glow-red: rgba(239, 68, 68, 0.4);
+  --glow-amber: rgba(245, 158, 11, 0.4);
+
+  /* Canvas */
+  --canvas-bg: rgba(255, 255, 255, 0.04);
+  --canvas-dot: rgba(255, 255, 255, 0.06);
+  --canvas-edge: rgba(255, 255, 255, 0.15);
+  --canvas-edge-active: rgba(34, 197, 94, 0.7);
+  --canvas-edge-running: rgba(99, 102, 241, 0.8);
+
+  /* Glass specific */
+  --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  /* Log panel (dark mode) */
+  --log-panel-bg: rgba(0, 0, 0, 0.45);
+  --log-panel-header: rgba(0, 0, 0, 0.25);
+
+  /* Node */
+  --node-idle-bg: rgba(255, 255, 255, 0.08);
+  --node-idle-bg-end: rgba(255, 255, 255, 0.03);
+  --node-idle-border: rgba(255, 255, 255, 0.12);
+
+  color-scheme: dark;
+}
+
+/* ═══════════════════════════════════════════════════
+   LIGHT THEME
+   ═══════════════════════════════════════════════════ */
+[data-theme="light"] {
+  /* Base colors */
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f5f0eb;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --bg-glass: rgba(255, 255, 255, 0.6);
+  
+  /* Border colors */
+  --border-default: rgba(0, 0, 0, 0.06);
+  --border-hover: rgba(0, 0, 0, 0.1);
+  --border-active: rgba(0, 0, 0, 0.15);
+  
+  /* Text colors */
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  
+  /* Accent colors (slightly deeper for contrast on light) */
+  --accent-blue: #4f46e5;
+  --accent-cyan: #0891b2;
+  --accent-purple: #9333ea;
+  --accent-green: #16a34a;
+  --accent-red: #dc2626;
+  --accent-yellow: #ca8a04;
+  --accent-amber: #d97706;
+  
+  /* Glow colors (softer for light mode) */
+  --glow-blue: rgba(79, 70, 229, 0.15);
+  --glow-cyan: rgba(8, 145, 178, 0.12);
+  --glow-purple: rgba(147, 51, 234, 0.15);
+  --glow-green: rgba(22, 163, 74, 0.15);
+  --glow-red: rgba(220, 38, 38, 0.15);
+  --glow-amber: rgba(217, 119, 6, 0.15);
+
+  /* Canvas */
+  --canvas-bg: rgba(0, 0, 0, 0.02);
+  --canvas-dot: rgba(0, 0, 0, 0.08);
+  --canvas-edge: rgba(0, 0, 0, 0.15);
+  --canvas-edge-active: rgba(22, 163, 74, 0.7);
+  --canvas-edge-running: rgba(79, 70, 229, 0.7);
+
+  /* Glass specific (warm frosted glass) */
+  --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.7) 100%);
+  --glass-border: rgba(0, 0, 0, 0.10);
+  --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* Log panel (light mode dark equivalent) */
+  --log-panel-bg: rgba(243, 244, 246, 0.95);
+  --log-panel-header: rgba(229, 231, 235, 0.9);
+
+  /* Node */
+  --node-idle-bg: rgba(255, 255, 255, 0.85);
+  --node-idle-bg-end: rgba(255, 255, 255, 0.7);
+  --node-idle-border: rgba(0, 0, 0, 0.1);
+
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark-only radial gradient background on body */
+[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(99,102,241,0.15), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(168,85,247,0.1), transparent 40%),
+    #0a0a0a;
+}
+
+/* Light warm gradient */
+[data-theme="light"] body {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(79,70,229,0.04), transparent 50%),
+    radial-gradient(circle at 80% 0%, rgba(147,51,234,0.03), transparent 50%),
+    #faf8f5;
+}
+
+/* ── Glass utilities ───────────────────────────────── */
+.glass {
+  background: var(--bg-glass) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow);
+}
+
+.glow-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .glow-hover:hover {
+  box-shadow: 0 0 50px rgba(99,102,241,0.35), 0 0 100px rgba(168,85,247,0.2) !important;
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="light"] .glow-hover:hover {
+  box-shadow: 0 4px 24px rgba(79,70,229,0.12), 0 8px 40px rgba(0,0,0,0.06) !important;
+  transform: translateY(-3px) scale(1.01);
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Card with glass */
+.glass-card {
+  background: var(--glass-bg) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+}
+
+/* ── Ambient glow blob ─────────────────────────────── */
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+[data-theme="light"] .glow-blob {
+  opacity: 0.15;
+}
+
+/* ── Animations ────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(10px, -15px) scale(1.05); }
+  50% { transform: translate(-5px, -25px) scale(1); }
+  75% { transform: translate(-15px, -10px) scale(0.97); }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float 28s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float 24s ease-in-out infinite reverse;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.06) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px var(--glow-blue); }
+  50% { box-shadow: 0 0 25px var(--glow-purple); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* ── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-active);
+}
+
+/* ── Focus ─────────────────────────────────────────── */
+input:focus,
+button:focus {
+  outline: none;
+}
+
+input:focus-visible {
+  box-shadow: 0 0 0 2px var(--glow-blue);
+  border-color: var(--accent-blue) !important;
+}
+
+/* ── Selection ─────────────────────────────────────── */
+::selection {
+  background: var(--accent-purple);
+  color: white;
+}
+
+/* ── Smooth transitions ────────────────────────────── */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════════
+   REACT FLOW OVERRIDES
+   ═══════════════════════════════════════════════════ */
+.react-flow__renderer {
+  background: transparent !important;
+}
+
+.react-flow__pane {
+  cursor: grab;
+}
+
+.react-flow__pane:active {
+  cursor: grabbing;
+}
+
+/* Edge styling */
+.react-flow__edge-path {
+  stroke: var(--canvas-edge);
+  stroke-width: 2;
+}
+
+/* Animated edge dashes */
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke-dasharray: 6 4;
+  animation: edge-flow 0.6s linear infinite;
+}
+
+@keyframes edge-flow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+/* Selection box */
+.react-flow__selection {
+  background: rgba(99, 102, 241, 0.08) !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+}
+
+/* MiniMap */
+.react-flow__minimap {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .react-flow__minimap {
+  background: rgba(15, 15, 15, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="light"] .react-flow__minimap {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Controls panel */
+.react-flow__controls {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .react-flow__controls {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="light"] .react-flow__controls {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.react-flow__controls button {
+  width: 28px !important;
+  height: 28px !important;
+  background: transparent !important;
+  border-color: var(--border-default) !important;
+}
+
+.react-flow__controls button svg {
+  fill: var(--text-secondary) !important;
+}
+
+.react-flow__controls button:hover {
+  background: var(--bg-card-hover) !important;
+}
+
+.react-flow__controls button:hover svg {
+  fill: var(--text-primary) !important;
+}
+
+/* Handles — always visible for discoverability */
+.react-flow__handle {
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.react-flow__handle:hover,
+.react-flow__node:hover .react-flow__handle {
+  opacity: 1;
+  transform: scale(1.3);
+}
+
+/* Connection line (while dragging) */
+.react-flow__connection-path {
+  stroke: var(--accent-blue) !important;
+  stroke-width: 2.5 !important;
+  stroke-dasharray: 6 4;
+}
+
+/* Node execution animation keyframes */
+@keyframes node-running-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 40px rgba(99, 102, 241, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(99, 102, 241, 0.5), 0 0 70px rgba(99, 102, 241, 0.2);
+  }
+}
+
+@keyframes node-failed-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), 0 0 40px rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.5), 0 0 70px rgba(239, 68, 68, 0.2);
+  }
+}
+
+/* Panel slide-in */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

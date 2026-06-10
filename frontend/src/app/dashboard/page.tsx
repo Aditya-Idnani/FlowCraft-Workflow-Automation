@@ -136,6 +136,10 @@ export default function DashboardPage() {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [executions, setExecutions] = useState<Execution[]>([]);
   const [loading, setLoading] = useState(true);
+  const firstName =
+    user?.name?.trim()?.split(/\s+/)[0] ||
+    user?.email?.split("@")[0] ||
+    "User";
 
   useEffect(() => {
     async function loadData() {
@@ -166,7 +170,7 @@ export default function DashboardPage() {
             <div className="mb-10">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-[var(--text-primary)]">
-                  Welcome back{user?.email ? `, ${user.email.split("@")[0]}` : ""}
+                  Welcome back, {firstName}
                 </h1>
                 <motion.div
                   animate={{ rotate: [0, 15, -15, 0] }}

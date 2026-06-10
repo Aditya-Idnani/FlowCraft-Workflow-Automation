@@ -1,6 +1,20 @@
 // API configuration and utilities
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050/api";
+function resolveApiBaseUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_API_URL?.trim();
+  const fallback = "http://localhost:5050/api";
+
+  if (!raw) {
+    return fallback;
+  }
+
+  const withoutTrailingSlash = raw.replace(/\/+$/, "");
+  return withoutTrailingSlash.endsWith("/api")
+    ? withoutTrailingSlash
+    : `${withoutTrailingSlash}/api`;
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 // Shared types
 export type Step = {

@@ -146,19 +146,6 @@ export const executionApi = {
   list: () => apiFetch<Execution[]>("/workflows/executions"),
 };
 
-// Auth API
-export const authApi = {
-  login: (email: string, password: string) =>
-    apiFetch<{ user: { id: string; email: string } }>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    }),
-
-  logout: () => apiFetch<{ message: string }>("/auth/logout", { method: "POST" }),
-
-  me: () => apiFetch<{ user: { id: string; email: string } }>("/auth/me"),
-};
-
 // Schedule API
 export const scheduleApi = {
   get: (workflowId: string) =>

@@ -1,107 +1,124 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import type { Session, User } from "@supabase/supabase-js"
 import { supabase } from "@/lib/supabase"
 
+type AuthUser = {
+  id: string
+  email: string | null
+  name: string | null
+  avatar: string | null
+  provider: string | null
+}
+
 type AuthContextType = {
+  session: Session | null
   token: string | null
-  user: any
+  user: AuthUser | null
   isAuthenticated: boolean
-  login: (token: string, user: any) => void
-  logout: () => void
-  updateUser: (updates: Partial<any>) => void
+  isLoading: boolean
+  logout: () => Promise<void>
+  updateUser: (updates: Partial<Pick<AuthUser, "name" | "avatar">>) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
+function toAuthUser(user: User | null): AuthUser | null {
+  if (!user) return null
+
+  return {
+    id: user.id,
+    email: user.email ?? null,
+    name:
+      (typeof user.user_metadata?.full_name === "string" && user.user_metadata.full_name) ||
+      (typeof user.user_metadata?.name === "string" && user.user_metadata.name) ||
+      null,
+    avatar:
+      (typeof user.user_metadata?.avatar_url === "string" && user.user_metadata.avatar_url) ||
+      null,
+    provider: user.app_metadata?.provider ?? null,
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(null)
-  const [user, setUser] = useState<any>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [session, setSession] = useState<Session | null>(null)
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Restore from localStorage
   useEffect(() => {
-    const storedToken = localStorage.getItem("token")
-    const storedUser = localStorage.getItem("user")
-
-    if (storedToken && storedUser) {
-      setToken(storedToken)
-      setUser(JSON.parse(storedUser))
-      setIsAuthenticated(true)
+    if (!supabase) {
+      setSession(null)
+      setUser(null)
+      setIsLoading(false)
+      return
     }
-  }, [])
 
-  // Listen for Supabase auth changes (Google OAuth)
-  useEffect(() => {
-    if (!supabase) return
+    let isMounted = true
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          const supaUser = {
-            id: session.user.id,
-            email: session.user.email,
-            name: session.user.user_metadata?.full_name,
-            avatar: session.user.user_metadata?.avatar_url,
-            provider: "google",
-          }
+    supabase.auth.getSession().then(({ data }) => {
+      if (!isMounted) return
+      setSession(data.session)
+      setUser(toAuthUser(data.session?.user ?? null))
+      setIsLoading(false)
+    })
 
-          localStorage.setItem("token", session.access_token)
-          localStorage.setItem("user", JSON.stringify(supaUser))
-          setToken(session.access_token)
-          setUser(supaUser)
-          setIsAuthenticated(true)
-        }
-
-        if (event === "SIGNED_OUT") {
-          localStorage.clear()
-          setToken(null)
-          setUser(null)
-          setIsAuthenticated(false)
-        }
-      }
-    )
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession)
+      setUser(toAuthUser(nextSession?.user ?? null))
+      setIsLoading(false)
+    })
 
     return () => {
+      isMounted = false
       subscription.unsubscribe()
     }
   }, [])
 
-  const login = (token: string, user: any) => {
-    localStorage.setItem("token", token)
-    localStorage.setItem("user", JSON.stringify(user))
-    setToken(token)
-    setUser(user)
-    setIsAuthenticated(true)
-  }
+  const updateUser = async (updates: Partial<Pick<AuthUser, "name" | "avatar">>) => {
+    if (!supabase || !session?.user) return
 
-  const updateUser = (updates: Partial<any>) => {
-    if (!user) return
-    const updatedUser = { ...user, ...updates }
-    localStorage.setItem("user", JSON.stringify(updatedUser))
-    setUser(updatedUser)
+    const currentMeta = session.user.user_metadata ?? {}
+    const nextMeta = {
+      ...currentMeta,
+      ...(updates.name !== undefined ? { full_name: updates.name, name: updates.name } : {}),
+      ...(updates.avatar !== undefined ? { avatar_url: updates.avatar } : {}),
+    }
+
+    const { data, error } = await supabase.auth.updateUser({
+      data: nextMeta,
+    })
+
+    if (error || !data.user) {
+      return
+    }
+
+    setUser(toAuthUser(data.user))
   }
 
   const logout = async () => {
-    // Sign out from Supabase if connected
     if (supabase) {
       await supabase.auth.signOut()
     }
-
-    localStorage.clear()
-    setToken(null)
-    setUser(null)
-    setIsAuthenticated(false)
     window.location.href = "/login"
   }
 
-  return (
-    <AuthContext.Provider
-      value={{ token, user, isAuthenticated, login, logout, updateUser }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      session,
+      token: session?.access_token ?? null,
+      user,
+      isAuthenticated: Boolean(session?.user),
+      isLoading,
+      logout,
+      updateUser,
+    }),
+    [session, user, isLoading]
   )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

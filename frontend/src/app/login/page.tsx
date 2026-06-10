@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { authApi } from "@/lib/api";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase";
-import { LogIn, Mail, Lock, Zap } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { LogIn, Mail, Lock, Zap, User, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 
 function GoogleIcon({ className = "w-5 h-5" }: { className?: string }) {
@@ -32,33 +31,107 @@ function GoogleIcon({ className = "w-5 h-5" }: { className?: string }) {
 }
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
+  const [isSignupMode, setIsSignupMode] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setSuccess("");
 
-    const { data, error } = await authApi.login(email, password);
-
-    setLoading(false);
-
-    if (error) {
-      setError(error);
+    if (!supabase) {
+      setError("Email login is not configured. Please set up Supabase credentials.");
       return;
     }
 
-    if (data) {
-      login(null, data.user);
-      router.push("/dashboard");
+    setLoading(true);
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    setLoading(false);
+
+    if (signInError) {
+      setError(signInError.message);
+      return;
     }
+
+    router.push("/dashboard");
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!supabase) {
+      setError("Signup is not configured. Please set up Supabase credentials.");
+      return;
+    }
+
+    setLoading(true);
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+          name,
+        },
+      },
+    });
+
+    setLoading(false);
+
+    if (signUpError) {
+      setError(signUpError.message);
+      return;
+    }
+
+    if (!data.user) {
+      setError("Signup failed. Please try again.");
+      return;
+    }
+
+    if (!data.session?.access_token) {
+      const { data: signedInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError || !signedInData.session?.access_token) {
+        setSuccess("Account created successfully. Please verify your email, then sign in.");
+        setIsSignupMode(false);
+        return;
+      }
+    }
+
+    setSuccess("Account created successfully. Redirecting to dashboard...");
+    router.push("/dashboard");
+  };
+
+  const handleModeSwitch = (nextIsSignup: boolean) => {
+    setIsSignupMode(nextIsSignup);
+    setError("");
+    setSuccess("");
   };
 
   const handleGoogleLogin = async () => {
@@ -134,8 +207,14 @@ export default function LoginPage() {
           transition={{ delay: 0.3, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="glass-card rounded-3xl p-8"
         >
-          <h2 className="text-2xl font-semibold text-[var(--text-primary)] mb-2">Welcome back</h2>
-          <p className="text-[var(--text-muted)] mb-8">Sign in to continue to your dashboard</p>
+          <h2 className="text-2xl font-semibold text-[var(--text-primary)] mb-2">
+            {isSignupMode ? "Create your account" : "Welcome back"}
+          </h2>
+          <p className="text-[var(--text-muted)] mb-8">
+            {isSignupMode
+              ? "Sign up to start building automated workflows"
+              : "Sign in to continue to your dashboard"}
+          </p>
 
           {error && (
             <motion.div
@@ -147,12 +226,42 @@ export default function LoginPage() {
             </motion.div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 rounded-xl bg-[var(--accent-green)]/10 border border-[var(--accent-green)]/20 text-[var(--accent-green)] text-sm"
+            >
+              {success}
+            </motion.div>
+          )}
+
+          <form onSubmit={isSignupMode ? handleSignup : handleLogin} className="space-y-5">
+            {/* Name (signup only) */}
+            {isSignupMode && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.35, duration: 0.35 }}
+                className="relative"
+              >
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full name"
+                  required={isSignupMode}
+                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-default)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-blue)] focus:shadow-[0_0_0_3px_var(--glow-blue)] transition-all duration-200"
+                />
+              </motion.div>
+            )}
+
             {/* Email */}
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.35 }}
+              transition={{ delay: isSignupMode ? 0.4 : 0.4, duration: 0.35 }}
               className="relative"
             >
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
@@ -170,7 +279,7 @@ export default function LoginPage() {
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5, duration: 0.35 }}
+              transition={{ delay: isSignupMode ? 0.5 : 0.5, duration: 0.35 }}
               className="relative"
             >
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
@@ -202,14 +311,28 @@ export default function LoginPage() {
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                     className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                   />
-                  Signing in...
+                  {isSignupMode ? "Creating account..." : "Signing in..."}
                 </>
               ) : (
                 <>
-                  <LogIn className="w-5 h-5" />
-                  Sign in
+                  {isSignupMode ? <UserPlus className="w-5 h-5" /> : <LogIn className="w-5 h-5" />}
+                  {isSignupMode ? "Create account" : "Sign in"}
                 </>
               )}
+            </motion.button>
+
+            {/* Toggle mode */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.63, duration: 0.35 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              type="button"
+              onClick={() => handleModeSwitch(!isSignupMode)}
+              className="w-full py-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border-default)] hover:bg-[var(--bg-card-hover)] hover:border-[var(--border-hover)] text-[var(--text-secondary)] font-medium transition-all duration-200"
+            >
+              {isSignupMode ? "Back to Sign In" : "Create Account"}
             </motion.button>
           </form>
 
@@ -250,7 +373,7 @@ export default function LoginPage() {
             ) : (
               <>
                 <GoogleIcon />
-                Sign in with Google
+                {isSignupMode ? "Continue with Google" : "Sign in with Google"}
               </>
             )}
           </motion.button>

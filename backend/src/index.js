@@ -7,15 +7,21 @@ import { initScheduler } from "./scheduler.js";
 
 const app = express();
 
-// ✅ CORS - allow both ports
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://flow-craft-workflow-automation.vercel.app",
+];
+
+const corsOptions = {
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+// ✅ CORS - allow local development and the deployed Vercel frontend
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // ✅ REQUIRED FOR COOKIES
 app.use(cookieParser());

@@ -21,7 +21,15 @@ const corsOptions = {
 
 // ✅ CORS - allow local development and the deployed Vercel frontend
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+
+// Express 5-safe preflight handling for all CORS requests
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  return next();
+});
 
 // ✅ REQUIRED FOR COOKIES
 app.use(cookieParser());

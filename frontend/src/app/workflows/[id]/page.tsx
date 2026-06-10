@@ -13,11 +13,28 @@ import {
   listItemVariants,
 } from "@/components/motion";
 import WorkflowCanvas from "@/components/workflow/WorkflowCanvas";
-import NodeConfigPanel, { type SelectedNodeInfo } from "@/components/workflow/NodeConfigPanel";
+import NodeConfigPanel from "@/components/workflow/NodeConfigPanel";
 import type { NodeStatus } from "@/components/workflow/CustomNode";
-import type { Edge } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
 import { useExecutionLogStore } from "@/context/ExecutionLogContext";
 import SchedulePanel from "@/components/workflow/SchedulePanel";
+
+type WorkflowNodeConfig = Record<string, string | number | boolean | null | undefined>;
+
+type WorkflowNodeData = {
+  label: string;
+  stepIndex: number;
+  status: NodeStatus;
+  nodeType?: string;
+  config?: WorkflowNodeConfig;
+};
+
+type WorkflowSelectedNode = {
+  id: string;
+  label: string;
+  nodeType: string;
+  config: WorkflowNodeConfig;
+};
 
 export default function WorkflowBuilderPage() {
   const params = useParams();
@@ -37,18 +54,21 @@ export default function WorkflowBuilderPage() {
   );
   // Track current edges from canvas (auto + user-drawn)
   const currentEdgesRef = useRef<Edge[]>([]);
-  const currentNodesRef = useRef<Node[]>([]);
+  const currentNodesRef = useRef<Node<WorkflowNodeData>[]>([]);
   const executionDone = useRef(false);
   // Track node data (nodeType + config) from canvas
-  const nodeDataMapRef = useRef<Record<string, any>>({});
+  const nodeDataMapRef = useRef<Record<string, WorkflowNodeData>>({});
   const [savingCanvas, setSavingCanvas] = useState(false);
 
   // Execution log store
   const executionLogStore = useExecutionLogStore();
 
   // Config panel state
-  const [selectedNode, setSelectedNode] = useState<SelectedNodeInfo | null>(null);
-  const [nodeDataUpdates, setNodeDataUpdates] = useState<{ nodeId: string; data: any } | null>(null);
+  const [selectedNode, setSelectedNode] = useState<WorkflowSelectedNode | null>(null);
+  const [nodeDataUpdates, setNodeDataUpdates] = useState<{
+    nodeId: string;
+    data: Partial<Pick<WorkflowNodeData, "label" | "nodeType" | "config">>;
+  } | null>(null);
 
   // Load workflow
   useEffect(() => {
@@ -115,12 +135,12 @@ export default function WorkflowBuilderPage() {
   }, []);
 
   // Track nodes from canvas
-  const handleNodesUpdate = useCallback((nodes: Node[]) => {
+  const handleNodesUpdate = useCallback((nodes: Node<WorkflowNodeData>[]) => {
     currentNodesRef.current = nodes;
   }, []);
 
   // Track node data from canvas
-  const handleNodeDataChange = useCallback((dataMap: Record<string, any>) => {
+  const handleNodeDataChange = useCallback((dataMap: Record<string, WorkflowNodeData>) => {
     nodeDataMapRef.current = dataMap;
   }, []);
 
@@ -144,7 +164,7 @@ export default function WorkflowBuilderPage() {
   };
 
   // ── Config panel handlers ───────────────────────────
-  const handleNodeClick = useCallback((nodeId: string, nodeData: any) => {
+  const handleNodeClick = useCallback((nodeId: string, nodeData: WorkflowNodeData) => {
     setSelectedNode({
       id: nodeId,
       label: nodeData.label ?? "",
@@ -157,7 +177,7 @@ export default function WorkflowBuilderPage() {
     setSelectedNode(null);
   }, []);
 
-  const handleNodeUpdate = useCallback((nodeId: string, updates: { label?: string; nodeType?: string; config?: Record<string, any> }) => {
+  const handleNodeUpdate = useCallback((nodeId: string, updates: { label?: string; nodeType?: string; config?: WorkflowNodeConfig }) => {
     // Update panel state immediately
     setSelectedNode((prev) => {
       if (!prev || prev.id !== nodeId) return prev;
@@ -167,7 +187,7 @@ export default function WorkflowBuilderPage() {
       };
     });
     // Push update to canvas
-    const newData: any = {};
+    const newData: Partial<Pick<WorkflowNodeData, "label" | "nodeType" | "config">> = {};
     if (updates.label !== undefined) newData.label = updates.label;
     if (updates.nodeType !== undefined) newData.nodeType = updates.nodeType;
     if (updates.config !== undefined) newData.config = updates.config;
@@ -221,7 +241,7 @@ export default function WorkflowBuilderPage() {
     async function executeNodeOnce(nodeId: string, execId: string) {
       const nodeData = nodeDataMapRef.current[nodeId];
       const nodeType: string = nodeData?.nodeType ?? "action.log";
-      const config = nodeData?.config ?? {};
+      const config: WorkflowNodeConfig = nodeData?.config ?? {};
 
       switch (nodeType) {
         case "trigger.start":
@@ -311,8 +331,8 @@ export default function WorkflowBuilderPage() {
           }
           await new Promise((resolve) => setTimeout(resolve, 200));
           return true;
-        } catch (err: any) {
-          const errorMsg = err?.message ?? String(err);
+        } catch (err: unknown) {
+          const errorMsg = err instanceof Error ? err.message : String(err);
           console.error(`[FlowCraft] ❌ ${nodeName} failed (attempt ${attempt}/${MAX_RETRIES}):`, errorMsg);
           executionLogStore.addLog(execId, `❌ ${nodeName} failed: ${errorMsg}`, "error");
 

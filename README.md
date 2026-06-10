@@ -1,83 +1,184 @@
 # 🚀 FlowCraft — Visual Workflow Automation Platform
 
-FlowCraft is a modern, node-based workflow automation platform inspired by tools like n8n and Zapier.
-It allows users to visually create, connect, and execute workflows with a clean, futuristic UI.
+FlowCraft is a modern workflow automation platform inspired by tools like **n8n**, **Zapier**, and **Make**.
+
+It enables users to visually design, connect, and execute automated workflows through an interactive node-based canvas. Users can build automation pipelines by connecting triggers and actions, monitor execution progress in real time, and manage workflows through an intuitive dashboard.
 
 ---
 
-## ✨ Features
+## 🌐 Live Demo
 
-### 🧠 Visual Workflow Builder
+**Frontend:** (https://flow-craft-workflow-automation.vercel.app/)
 
-* Drag-and-drop node editor (React Flow)
-* Connect nodes with curved edges
-* Custom node components
-* Interactive canvas with zoom & pan
-
-### ⚙️ Execution Engine
-
-* Graph-based execution (not just linear)
-* Step-by-step execution flow
-* Execution logs and history
-* Node states:
-
-  * ⏳ Running
-  * ✅ Success
-  * ❌ Failed
-
-### 🎨 Modern UI/UX
-
-* Dark + Light mode
-* Glassmorphism + soft neon glow
-* Smooth animations (hover, transitions)
-* Responsive layout
-
-### 🔐 Authentication (in progress)
-
-* Supabase integration (planned)
-* Google OAuth (planned)
-
-### 🗂 Workflow Management
-
-* Create, edit, delete workflows
-* Add/remove steps dynamically
-* Execution history tracking
+**Backend API:** (https://flowcraft-workflow-automation.onrender.com)
 
 ---
 
-## 🏗 Tech Stack
+### Landing Page
+
+<img width="1527" height="1042" alt="image" src="https://github.com/user-attachments/assets/b3bd0f81-d531-4867-8d31-c70e23ab930b" />
+
+
+### Workflow Builder
+
+<img width="1511" height="1045" alt="image" src="https://github.com/user-attachments/assets/ee576001-29d7-4235-a0df-5a344a710310" />
+
+
+### Dashboard
+
+<img width="1522" height="1040" alt="image" src="https://github.com/user-attachments/assets/3d3ab116-9eb0-4c8f-b060-83149e769316" />
+
+
+---
+
+# ✨ Features
+
+## 🎨 Modern User Experience
+
+* Premium landing page experience
+* Dark and light themes
+* Responsive design
+* Smooth animations and transitions
+* Glassmorphism-inspired UI
+* Interactive workflow canvas
+
+---
+
+## 🔐 Authentication
+
+* Email & Password Authentication
+* Google OAuth Login
+* Secure session management with Supabase Auth
+* Protected routes
+
+---
+
+## ⚙️ Visual Workflow Builder
+
+* Drag-and-drop node editor
+* Connect nodes visually
+* Dynamic workflow creation
+* Real-time workflow editing
+* Node-based architecture inspired by n8n
+* Interactive execution flow visualization
+
+---
+
+## 📊 Workflow Management
+
+* Create workflows
+* Edit workflows
+* Execute workflows
+* View execution history
+* Dashboard analytics
+* Workflow status tracking
+
+---
+
+## 🗄️ Database Integration
+
+* PostgreSQL Database
+* Prisma ORM
+* Neon Serverless Database
+* Migration management
+* Scalable data architecture
+
+---
+
+## ☁️ Cloud Deployment
 
 ### Frontend
 
-* Next.js (App Router)
-* React
-* Tailwind CSS
-* React Flow
-* Framer Motion
+* Next.js
+* Hosted on Vercel
 
 ### Backend
 
-* Node.js
-* Express
-* Prisma ORM
-* REST API
+* Node.js + Express
+* Hosted on Render
+
+### Database
+
+* Neon PostgreSQL
+
+### Authentication
+
+* Supabase Auth
 
 ---
 
-## 📁 Project Structure
+# 🏗️ Tech Stack
 
+## Frontend
+
+* Next.js 16
+* React
+* TypeScript
+* Tailwind CSS
+* React Flow (@xyflow/react)
+* Framer Motion
+
+## Backend
+
+* Node.js
+* Express.js
+* Prisma ORM
+* JWT Authentication
+* REST APIs
+
+## Database
+
+* PostgreSQL
+* Neon
+
+## Authentication
+
+* Supabase Auth
+* Google OAuth
+
+## Deployment
+
+* Vercel
+* Render
+
+---
+
+# 🧠 Architecture
+
+```text
+User
+ │
+ ▼
+Frontend (Next.js / Vercel)
+ │
+ ├── Supabase Authentication
+ │
+ ▼
+Backend API (Express / Render)
+ │
+ ▼
+Prisma ORM
+ │
+ ▼
+Neon PostgreSQL
 ```
-FlowCraft-Workflow-Automation/
+
+---
+
+# 📂 Project Structure
+
+```text
+FlowCraft/
 │
-├── backend/           # Express + Prisma API
+├── frontend/
 │   ├── src/
+│   ├── public/
+│   └── components/
+│
+├── backend/
 │   ├── prisma/
-│   └── package.json
-│
-├── frontend/          # Next.js frontend
 │   ├── src/
-│   ├── app/
-│   └── package.json
+│   └── routes/
 │
 ├── README.md
 └── .gitignore
@@ -85,121 +186,114 @@ FlowCraft-Workflow-Automation/
 
 ---
 
-## ⚙️ Setup Instructions
+# 🚀 Getting Started
 
-### 1️⃣ Clone the repo
+## Clone Repository
 
-```
-git clone https://github.com/YOUR_USERNAME/FlowCraft-Workflow-Automation.git
+```bash
+git clone https://github.com/Aditya-Idnani/FlowCraft-Workflow-Automation.git
+
 cd FlowCraft-Workflow-Automation
 ```
 
 ---
 
-### 2️⃣ Backend Setup
+## Frontend Setup
 
-```
-cd backend
-npm install
-```
-
-Create `.env` file:
-
-```
-DATABASE_URL=your_database_url
-PORT=5050
-```
-
-Run backend:
-
-```
-npm run dev
-```
-
-Backend runs on:
-
-```
-http://localhost:5050
-```
-
----
-
-### 3️⃣ Frontend Setup
-
-```
+```bash
 cd frontend
+
 npm install
+
 npm run dev
 ```
 
 Frontend runs on:
 
-```
+```text
 http://localhost:3000
 ```
 
 ---
 
-## 🔌 API Endpoints
+## Backend Setup
 
-### Workflows
+```bash
+cd backend
 
-* `GET /api/workflows`
-* `POST /api/workflows`
-* `GET /api/workflows/:id`
+npm install
 
-### Steps
+npm run dev
+```
 
-* `POST /api/workflows/:id/steps`
-* `DELETE /api/workflows/:id/steps/:stepId`
+Backend runs on:
 
-### Execution
-
-* `POST /api/workflows/:id/execute`
-* `GET /api/workflows/executions`
+```text
+http://localhost:5050
+```
 
 ---
 
-## 🧪 Example Flow
+## Environment Variables
 
-1. Create a workflow
-2. Add steps (nodes)
-3. Connect nodes
-4. Click execute
-5. Watch step-by-step execution
+### Frontend
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_API_URL=
+```
+
+### Backend
+
+```env
+DATABASE_URL=
+JWT_SECRET=
+```
 
 ---
 
-## 🛣 Roadmap
+# 🎯 Learning Outcomes
 
-* [ ] Real integrations (Google Calendar, Telegram, Webhooks)
-* [ ] OAuth authentication (Supabase)
-* [ ] Persistent execution engine (queue system)
-* [ ] Retry + error handling system
-* [ ] Deploy to cloud (Vercel + backend hosting)
+This project helped me gain practical experience with:
+
+* Workflow automation systems
+* Visual node-based interfaces
+* Full-stack application development
+* Authentication and OAuth
+* Database design
+* Cloud deployment
+* Prisma ORM
+* PostgreSQL
+* API architecture
+* Production debugging and deployment
 
 ---
 
-## 🧑‍💻 Author
+# 🔮 Future Enhancements
+
+* Telegram Integration
+* Google Calendar Integration
+* Email Automation
+* Webhook Support
+* Workflow Scheduling
+* AI-powered workflow generation
+* Marketplace for workflow templates
+* Team collaboration features
+
+---
+
+# 👨‍💻 Author
 
 **Aditya Idnani**
 
----
+SRM Institute of Science and Technology
 
-## ⭐ Inspiration
+GitHub: https://github.com/Aditya-Idnani
 
-* n8n
-* Zapier
-* Linear UI
-* Vercel dashboard aesthetics
 
 ---
 
-## 📌 Notes
+## ⭐ Support
 
-This project is actively being developed and improved.
-UI, performance, and integrations will continue evolving.
-
----
-
-🔥 If you like this project, consider starring the repo!
+If you found this project interesting, consider giving it a star on GitHub.

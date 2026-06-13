@@ -127,7 +127,7 @@ export default function WorkflowsPage() {
     if (!newWorkflowName.trim()) return;
 
     setCreating(true);
-    const { data, error } = await workflowApi.create(newWorkflowName);
+    const { data, error } = await workflowApi.create({ name: newWorkflowName });
     setCreating(false);
 
     if (error) {

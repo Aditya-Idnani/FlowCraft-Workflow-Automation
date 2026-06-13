@@ -4,8 +4,9 @@ import { ThemeProvider } from "@/context/ThemeContext"
 import { ExecutionLogProvider } from "@/context/ExecutionLogContext"
 
 export const metadata = {
-  title: "FlowCraft — Workflow Automation",
-  description: "Build, manage, and execute powerful workflow automations with a premium visual interface.",
+  title: "FlowCraft — Visual Workflow Automation",
+  description: "Build, manage, and execute powerful workflow automations with a premium visual interface. Used by engineering and operations teams worldwide.",
+  keywords: "workflow automation, visual builder, no-code, integrations, scheduling",
 }
 
 export default function RootLayout({
@@ -19,7 +20,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
       </head>

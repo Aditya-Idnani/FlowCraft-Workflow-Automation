@@ -349,13 +349,11 @@ export default function WorkflowCanvas({
 
   return (
     <div
-      className="relative w-full rounded-2xl overflow-hidden border border-[var(--border-default)]"
+      className="relative w-full h-full overflow-hidden"
       style={{
-        height: "500px",
         background: "var(--canvas-bg)",
         backdropFilter: "blur(24px) saturate(180%)",
         WebkitBackdropFilter: "blur(24px) saturate(180%)",
-        boxShadow: "var(--glass-shadow), var(--glass-inset)",
       }}
     >
       {/* Ambient decorative blobs */}

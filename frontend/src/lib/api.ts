@@ -102,10 +102,10 @@ export const workflowApi = {
 
   get: (id: string) => apiFetch<Workflow>(`/workflows/${id}`),
 
-  create: (name: string) =>
+  create: (data: { name: string; nodes?: any[]; edges?: any[] }) =>
     apiFetch<Workflow>("/workflows", {
       method: "POST",
-      body: JSON.stringify({ name }),
+      body: JSON.stringify(data),
     }),
 
   update: (id: string, name: string) =>

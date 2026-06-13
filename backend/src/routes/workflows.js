@@ -28,18 +28,58 @@ router.get("/", async (req, res) => {
 
 // POST /workflows - Create new workflow
 router.post("/", async (req, res) => {
-  const { name } = req.body;
+  const { name, nodes, edges } = req.body;
 
   if (!name || typeof name !== "string" || !name.trim()) {
     return res.status(400).json({ error: "Workflow name is required" });
   }
 
-  const workflow = await prisma.workflow.create({
-    data: { name: name.trim() },
-    include: { steps: true },
-  });
+  try {
+    const workflow = await prisma.workflow.create({
+      data: { name: name.trim() },
+    });
 
-  res.status(201).json(workflow);
+    if (nodes && Array.isArray(nodes)) {
+      const idMap = {};
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const step = await prisma.step.create({
+          data: {
+            name: node.data?.label || `Step ${i + 1}`,
+            position: i,
+            workflowId: workflow.id,
+            positionX: node.position?.x ?? 0,
+            positionY: node.position?.y ?? 0,
+            nodeType: node.type ?? node.data?.nodeType,
+            config: node.data?.config,
+          }
+        });
+        idMap[node.id] = step.id;
+      }
+
+      if (edges && Array.isArray(edges)) {
+        await prisma.edge.createMany({
+          data: edges.map((e) => ({
+            id: e.id.startsWith("e") ? `${workflow.id}-${e.id}` : e.id,
+            source: idMap[e.source] || e.source,
+            sourceHandle: e.sourceHandle || "right",
+            target: idMap[e.target] || e.target,
+            targetHandle: e.targetHandle || "left",
+            workflowId: workflow.id,
+          })),
+        });
+      }
+    }
+
+    const updatedWorkflow = await prisma.workflow.findUnique({
+      where: { id: workflow.id },
+      include: { steps: { orderBy: { position: "asc" } }, edges: true },
+    });
+
+    res.status(201).json(updatedWorkflow);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // GET /workflows/executions - List all executions
@@ -67,7 +107,10 @@ router.get("/executions", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const workflow = await prisma.workflow.findUnique({
     where: { id: req.params.id },
-    include: { steps: { orderBy: { position: "asc" } } },
+    include: { 
+      steps: { orderBy: { position: "asc" } },
+      edges: true,
+    },
   });
 
   if (!workflow) {

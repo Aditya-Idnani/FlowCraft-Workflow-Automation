@@ -79,12 +79,12 @@ async function apiFetch<T>(
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData?.session?.user?.id;
 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    };
+    const headers = new Headers(options?.headers);
+    if (!headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
     if (userId) {
-      headers["x-user-id"] = userId;
+      headers.set("x-user-id", userId);
     }
 
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { ArrowRight, CheckCircle, Play, ChevronRight, Menu, X } from "lucide-react";
+import { ArrowRight, CheckCircle, Play, ChevronRight, Menu, X, Zap } from "lucide-react";
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -112,9 +112,9 @@ function Navbar() {
         <motion.div
           whileHover={{ scale: 1.08, rotate: 4 }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--accent-blue)] to-[var(--accent-purple)] flex items-center justify-center shadow-[0_0_18px_var(--glow-blue)]"
+          className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.2)]"
         >
-          <IconZap className="w-4 h-4" />
+          <Zap className="w-5 h-5 text-black fill-black stroke-black" strokeWidth={2.5} />
         </motion.div>
         <div>
           <span className="text-base font-bold text-[var(--text-primary)] tracking-tight">FlowCraft</span>

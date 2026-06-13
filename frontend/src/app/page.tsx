@@ -771,9 +771,9 @@ export default function HomePage() {
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 3, repeat: Infinity, repeatDelay: 5 }}
-                className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--accent-blue)] to-[var(--accent-purple)] shadow-[0_0_36px_var(--glow-blue)] mb-5 mx-auto"
+                className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white shadow-[0_0_36px_rgba(255,255,255,0.2)] mb-5 mx-auto"
               >
-                <IconZap className="w-7 h-7" />
+                <Zap className="w-7 h-7 text-black fill-black stroke-black" strokeWidth={2.5} />
               </motion.div>
 
               <h2 className="text-4xl md:text-5xl font-extrabold text-[var(--text-primary)] mb-5 tracking-tight">
@@ -801,12 +801,12 @@ export default function HomePage() {
       <footer className="py-8 px-6 border-t border-[var(--border-default)]">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[var(--accent-blue)] to-[var(--accent-purple)] flex items-center justify-center">
-              <IconZap className="w-3.5 h-3.5" />
+            <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+              <Zap className="w-3.5 h-3.5 text-black fill-black stroke-black" strokeWidth={2.5} />
             </div>
             <span className="text-sm font-bold text-[var(--text-primary)]">FlowCraft</span>
           </div>
-          <p className="text-sm text-[var(--text-muted)]">© 2026 FlowCraft · Built with ♥ for automation</p>
+          <p className="text-sm text-[var(--text-muted)]">© 2026 FlowCraft · built by aditya idnani</p>
           <div className="flex items-center gap-4">
             {["Privacy", "Terms", "Docs"].map((link) => (
               <a key={link} href="#" className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors">{link}</a>

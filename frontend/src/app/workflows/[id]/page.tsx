@@ -9,7 +9,7 @@ import {
   ArrowLeft, Play, Settings2, MoreHorizontal, Pencil, ChevronRight, Home,
   Zap, Clock, Mail, Webhook, Database, Hash, AlertCircle, Plus, Minus,
   Sun, Moon, CheckCircle, XCircle, Activity, Loader2, X, RefreshCw,
-  ChevronDown, MessageSquare, Globe, Cpu, Timer, Menu,
+  ChevronDown, MessageSquare, Globe, Cpu, Timer, Menu, Search,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import WorkflowCanvas from "@/components/workflow/WorkflowCanvas";

@@ -806,7 +806,7 @@ export default function HomePage() {
             </div>
             <span className="text-sm font-bold text-[var(--text-primary)]">FlowCraft</span>
           </div>
-          <p className="text-sm text-[var(--text-muted)]">© 2026 FlowCraft · built by aditya idnani</p>
+          <p className="text-sm text-[var(--text-muted)]">© 2026 FlowCraft · Built by Aditya Idnani</p>
           <div className="flex items-center gap-4">
             {["Privacy", "Terms", "Docs"].map((link) => (
               <a key={link} href="#" className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors">{link}</a>

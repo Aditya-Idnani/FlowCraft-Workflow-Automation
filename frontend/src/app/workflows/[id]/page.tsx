@@ -556,7 +556,11 @@ export default function WorkflowBuilderPage() {
 
           {/* Avatar */}
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-[var(--accent-cyan)] flex items-center justify-center shadow-[0_0_10px_var(--glow-purple)] overflow-hidden ml-1">
-            <span className="text-white text-xs font-bold">{initials}</span>
+            {user?.avatar ? (
+              <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-white text-xs font-bold">{initials}</span>
+            )}
           </div>
         </div>
       </header>
@@ -681,8 +685,12 @@ export default function WorkflowBuilderPage() {
 
           {/* User */}
           <div className="px-3 pb-3 pt-2 border-t border-[var(--border-default)] flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-[var(--accent-cyan)] flex items-center justify-center shrink-0">
-              <span className="text-white text-[10px] font-bold">{initials}</span>
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--accent-purple)] to-[var(--accent-cyan)] flex items-center justify-center shrink-0 overflow-hidden">
+              {user?.avatar ? (
+                <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-white text-[10px] font-bold">{initials}</span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-semibold text-[var(--text-primary)] truncate">{firstName}</p>

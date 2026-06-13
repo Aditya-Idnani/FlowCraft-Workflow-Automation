@@ -42,7 +42,7 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  // Handle avatar upload via file reader
+  // Handle avatar upload via file reader with compression
   const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -54,12 +54,41 @@ export default function ProfilePage() {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      const result = event.target?.result as string;
-      setAvatar(result);
-      if (!isEditing) {
-        // If not in edit mode, auto-save the picture immediately
-        updateUser({ avatar: result });
-      }
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        
+        // Target max size 128x128 for Supabase metadata limits
+        const MAX_SIZE = 128;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+        setAvatar(compressedBase64);
+        if (!isEditing) {
+          // If not in edit mode, auto-save the picture immediately
+          updateUser({ avatar: compressedBase64 });
+        }
+      };
+      img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
   };

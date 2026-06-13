@@ -76,9 +76,10 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
           <motion.div
             whileHover={{ scale: 1.08, rotate: 4 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="relative w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+            className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--accent-blue)] to-[var(--accent-purple)] flex items-center justify-center shadow-[0_0_18px_var(--glow-blue)] group-hover:shadow-[0_0_28px_var(--glow-purple)] transition-shadow duration-300 shrink-0 overflow-hidden"
           >
-            <img src="/favicon.ico" alt="FlowCraft Logo" className="w-8 h-8 object-contain drop-shadow-[0_0_12px_rgba(99,102,241,0.5)]" />
+            <Zap className="w-4 h-4 text-white fill-white drop-shadow-md z-10 opacity-100" />
+            <div className="absolute inset-0 bg-white/20" />
           </motion.div>
           <div>
             <span className="text-base font-bold text-[var(--text-primary)] tracking-tight">FlowCraft</span>

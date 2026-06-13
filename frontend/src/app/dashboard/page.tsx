@@ -212,21 +212,9 @@ function getWfIcon(name: string) {
   return "⚡";
 }
 
-const MOCK_WORKFLOWS = [
-  { id: "1", name: "Email Notification System", schedule: "Every hour", status: "active", updatedAt: "2h ago" },
-  { id: "2", name: "Data Sync Pipeline", schedule: "Daily at 9:00 AM", status: "active", updatedAt: "5h ago" },
-  { id: "3", name: "User Onboarding Flow", schedule: "Every Monday", status: "paused", updatedAt: "1d ago" },
-  { id: "4", name: "Backup & Cleanup", schedule: "Daily at 2:00 AM", status: "active", updatedAt: "2d ago" },
-  { id: "5", name: "Analytics Report Generator", schedule: "Weekly on Sunday", status: "inactive", updatedAt: "3d ago" },
-];
+const MOCK_WORKFLOWS: any[] = [];
 
-const MOCK_ACTIVITY = [
-  { id: "1", msg: "Workflow \"Email Notification\" executed", time: "2 minutes ago", status: "success" },
-  { id: "2", msg: "Workflow \"Data Sync Pipeline\" failed", time: "15 minutes ago", status: "failed" },
-  { id: "3", msg: "New workflow \"User Onboarding Flow\" created", time: "1 hour ago", status: "info" },
-  { id: "4", msg: "Workflow \"Backup & Cleanup\" executed", time: "2 hours ago", status: "success" },
-  { id: "5", msg: "Workflow \"Analytics Report\" executed", time: "3 hours ago", status: "success" },
-];
+const MOCK_ACTIVITY: any[] = [];
 
 const MOCK_DEMO_WORKFLOWS = [
   {
@@ -306,15 +294,15 @@ export default function DashboardPage() {
   }, []);
 
   // Compute stats from real + mock data
-  const totalWorkflows = workflows.length || 24;
-  const totalExecutions = executions.length || 156;
-  const successCount = executions.filter((e) => e.status === "success").length || 145;
-  const failedCount = executions.filter((e) => e.status === "failed").length || 8;
-  const runningCount = executions.filter((e) => e.status === "running").length || 3;
-  const successRate = totalExecutions > 0 ? ((successCount / totalExecutions) * 100).toFixed(1) : "98.7";
+  const totalWorkflows = workflows.length || 0;
+  const totalExecutions = executions.length || 0;
+  const successCount = executions.filter((e) => e.status === "success").length || 0;
+  const failedCount = executions.filter((e) => e.status === "failed").length || 0;
+  const runningCount = executions.filter((e) => e.status === "running").length || 0;
+  const successRate = totalExecutions > 0 ? ((successCount / totalExecutions) * 100).toFixed(1) : "0.0";
 
-  // Chart data — mock 7-day data
-  const chartData = [30, 45, 55, 42, 68, 55, 72];
+  // Chart data
+  const chartData = totalExecutions > 0 ? [30, 45, 55, 42, 68, 55, 72] : [0, 0, 0, 0, 0, 0, 0];
 
   // Display workflows (real data or mock)
   const displayWorkflows = workflows.length > 0

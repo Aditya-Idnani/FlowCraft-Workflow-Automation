@@ -5,16 +5,7 @@ import { motion } from "framer-motion";
 import { Search, Terminal, Filter, Download, Server, Cpu, Network, CheckCircle, AlertCircle, Clock } from "lucide-react";
 import { useState } from "react";
 
-const MOCK_LOGS = [
-  { id: "LOG-01", time: "10:45:23 AM", level: "info", source: "WebhookTrigger", msg: "Received payload from Stripe" },
-  { id: "LOG-02", time: "10:45:24 AM", level: "info", source: "DataTransformer", msg: "Parsed customer object" },
-  { id: "LOG-03", time: "10:45:26 AM", level: "warning", source: "SalesforceAPI", msg: "Rate limit threshold at 90%" },
-  { id: "LOG-04", time: "10:45:28 AM", level: "error", source: "SlackAction", msg: "Missing channel ID parameter" },
-  { id: "LOG-05", time: "10:46:01 AM", level: "info", source: "System", msg: "Garbage collection completed" },
-  { id: "LOG-06", time: "10:47:15 AM", level: "info", source: "ScheduleNode", msg: "Cron job 'Daily Sync' triggered" },
-  { id: "LOG-07", time: "10:47:16 AM", level: "info", source: "EmailAction", msg: "Sent 50 emails successfully" },
-  { id: "LOG-08", time: "10:48:30 AM", level: "warning", source: "Database", msg: "Query execution time > 1000ms" },
-];
+const MOCK_LOGS: any[] = [];
 
 export default function LogsPage() {
   const [filter, setFilter] = useState("all");

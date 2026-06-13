@@ -6,12 +6,12 @@ import { Link2, Search, Plus, Settings2, Globe, Mail, MessageSquare, Database, C
 import { useState } from "react";
 
 const MOCK_CONNECTIONS = [
-  { id: "c1", name: "Slack", category: "Communication", desc: "Send messages and notifications to Slack channels.", connected: true, icon: MessageSquare, color: "#eab308", bg: "from-yellow-500 to-amber-600" },
-  { id: "c2", name: "Gmail", category: "Email", desc: "Send, read, and manage emails via Google Workspace.", connected: true, icon: Mail, color: "#ef4444", bg: "from-red-500 to-rose-600" },
+  { id: "c1", name: "Slack", category: "Communication", desc: "Send messages and notifications to Slack channels.", connected: false, icon: MessageSquare, color: "#eab308", bg: "from-yellow-500 to-amber-600" },
+  { id: "c2", name: "Gmail", category: "Email", desc: "Send, read, and manage emails via Google Workspace.", connected: false, icon: Mail, color: "#ef4444", bg: "from-red-500 to-rose-600" },
   { id: "c3", name: "Salesforce", category: "CRM", desc: "Manage leads, opportunities, and accounts.", connected: false, icon: Database, color: "#3b82f6", bg: "from-blue-500 to-indigo-600" },
   { id: "c4", name: "Shopify", category: "E-Commerce", desc: "Automate order processing and inventory management.", connected: false, icon: Globe, color: "#22c55e", bg: "from-green-500 to-emerald-600" },
-  { id: "c5", name: "PostgreSQL", category: "Database", desc: "Directly query and update your Postgres databases.", connected: true, icon: Database, color: "#6366f1", bg: "from-indigo-500 to-violet-600" },
-  { id: "c6", name: "Custom Webhook", category: "Developer Tools", desc: "Receive real-time HTTP payloads from any app.", connected: true, icon: Globe, color: "#a855f7", bg: "from-purple-500 to-fuchsia-600" },
+  { id: "c5", name: "PostgreSQL", category: "Database", desc: "Directly query and update your Postgres databases.", connected: false, icon: Database, color: "#6366f1", bg: "from-indigo-500 to-violet-600" },
+  { id: "c6", name: "Custom Webhook", category: "Developer Tools", desc: "Receive real-time HTTP payloads from any app.", connected: false, icon: Globe, color: "#a855f7", bg: "from-purple-500 to-fuchsia-600" },
 ];
 
 export default function ConnectionsPage() {

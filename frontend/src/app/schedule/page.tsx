@@ -4,11 +4,7 @@ import { DashboardLayout } from "@/components/layout";
 import { motion } from "framer-motion";
 import { Calendar, Clock, MoreHorizontal, Play, Pause, Trash2, Plus, Zap, Activity } from "lucide-react";
 
-const MOCK_SCHEDULES = [
-  { id: "SCH-1", name: "Daily Data Sync", workflow: "Salesforce to Postgres", cron: "0 0 * * *", nextRun: "In 4 hours", status: "active", icon: Zap, color: "#a855f7" },
-  { id: "SCH-2", name: "Weekly Report", workflow: "Generate KPI PDF", cron: "0 9 * * 1", nextRun: "In 2 days", status: "active", icon: Activity, color: "#22c55e" },
-  { id: "SCH-3", name: "Hourly Cleanup", workflow: "Delete Temp Files", cron: "0 * * * *", nextRun: "In 15 mins", status: "paused", icon: Clock, color: "#f59e0b" },
-];
+const MOCK_SCHEDULES: any[] = [];
 
 export default function SchedulePage() {
   return (

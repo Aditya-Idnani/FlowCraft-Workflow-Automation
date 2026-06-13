@@ -1,4 +1,5 @@
 // API configuration and utilities
+import { supabase } from "./supabase";
 
 function resolveApiBaseUrl(): string {
   const raw = process.env.NEXT_PUBLIC_API_URL?.trim();
@@ -75,12 +76,20 @@ async function apiFetch<T>(
   options?: RequestInit
 ): Promise<{ data: T | null; error: string | null }> {
   try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData?.session?.user?.id;
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    };
+    if (userId) {
+      headers["x-user-id"] = userId;
+    }
+
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
+      headers,
       credentials: "include",
     });
 

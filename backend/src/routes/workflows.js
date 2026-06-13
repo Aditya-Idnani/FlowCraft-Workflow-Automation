@@ -10,9 +10,20 @@ import {
 
 const router = express.Router();
 
+const extractUser = (req, res, next) => {
+  const userId = req.headers["x-user-id"];
+  if (userId) {
+    req.userId = userId;
+  }
+  next();
+};
+
+router.use(extractUser);
+
 // GET /workflows - List all workflows
 router.get("/", async (req, res) => {
   const workflows = await prisma.workflow.findMany({
+    where: req.userId ? { userId: req.userId } : undefined,
     include: { steps: { orderBy: { position: "asc" } } },
     orderBy: { createdAt: "desc" },
   });
@@ -36,7 +47,7 @@ router.post("/", async (req, res) => {
 
   try {
     const workflow = await prisma.workflow.create({
-      data: { name: name.trim() },
+      data: { name: name.trim(), userId: req.userId },
     });
 
     if (nodes && Array.isArray(nodes)) {
@@ -85,6 +96,7 @@ router.post("/", async (req, res) => {
 // GET /workflows/executions - List all executions
 router.get("/executions", async (req, res) => {
   const executions = await prisma.execution.findMany({
+    where: req.userId ? { workflow: { userId: req.userId } } : undefined,
     include: { logs: { orderBy: { timestamp: "asc" } } },
     orderBy: { startedAt: "desc" },
   });
@@ -105,8 +117,8 @@ router.get("/executions", async (req, res) => {
 
 // GET /workflows/:id - Get single workflow
 router.get("/:id", async (req, res) => {
-  const workflow = await prisma.workflow.findUnique({
-    where: { id: req.params.id },
+  const workflow = await prisma.workflow.findFirst({
+    where: { id: req.params.id, userId: req.userId || undefined },
     include: { 
       steps: { orderBy: { position: "asc" } },
       edges: true,
@@ -134,12 +146,18 @@ router.put("/:id", async (req, res) => {
   const { name } = req.body;
 
   try {
-    const workflow = await prisma.workflow.update({
-      where: { id: req.params.id },
+    const workflow = await prisma.workflow.updateMany({
+      where: { id: req.params.id, userId: req.userId || undefined },
       data: { name: name && name.trim() ? name.trim() : undefined },
+    });
+    
+    const updatedWorkflow = await prisma.workflow.findFirst({
+      where: { id: req.params.id, userId: req.userId || undefined },
       include: { steps: { orderBy: { position: "asc" } } },
     });
-    res.json(workflow);
+    
+    if (!updatedWorkflow) throw new Error("Not found");
+    res.json(updatedWorkflow);
   } catch (err) {
     return res.status(404).json({ error: "Workflow not found" });
   }
@@ -148,7 +166,7 @@ router.put("/:id", async (req, res) => {
 // DELETE /workflows/:id - Delete workflow
 router.delete("/:id", async (req, res) => {
   try {
-    await prisma.workflow.delete({ where: { id: req.params.id } });
+    await prisma.workflow.deleteMany({ where: { id: req.params.id, userId: req.userId || undefined } });
     unscheduleWorkflow(req.params.id);
     res.status(204).send();
   } catch (err) {
@@ -205,8 +223,8 @@ router.delete("/:id/steps/:stepId", async (req, res) => {
 
 // POST /workflows/:id/execute - Execute workflow
 router.post("/:id/execute", async (req, res) => {
-  const workflow = await prisma.workflow.findUnique({
-    where: { id: req.params.id },
+  const workflow = await prisma.workflow.findFirst({
+    where: { id: req.params.id, userId: req.userId || undefined },
     include: { steps: { orderBy: { position: "asc" } } },
   });
 

@@ -214,7 +214,12 @@ function getWfIcon(name: string) {
 
 const MOCK_WORKFLOWS: any[] = [];
 
-const MOCK_ACTIVITY: any[] = [];
+const MOCK_ACTIVITY: any[] = [
+  { id: "a1", status: "success", msg: "User Onboarding executed successfully", time: "2 mins ago" },
+  { id: "a2", status: "failed", msg: "Daily Sales Report failed: Database timeout", time: "1 hour ago" },
+  { id: "a3", status: "running", msg: "Lead Sync is currently running", time: "Just now" },
+  { id: "a4", status: "success", msg: "E-commerce Order Fulfillment executed successfully", time: "3 hours ago" },
+];
 
 const MOCK_DEMO_WORKFLOWS = [
   {

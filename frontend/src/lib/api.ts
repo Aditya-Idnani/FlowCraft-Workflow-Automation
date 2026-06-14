@@ -105,11 +105,23 @@ async function apiFetch<T>(
   }
 }
 
+const MOCK_WORKFLOWS: Workflow[] = [
+  { id: "wf1", name: "User Onboarding", steps: [{ id: "s1", name: "Webhook", position: { x: 100, y: 100 }, data: { label: "Webhook", nodeType: "trigger.webhook" } } as any, { id: "s2", name: "Send Email", position: { x: 400, y: 100 }, data: { label: "Send Email", nodeType: "action.email" } } as any], edges: [{ id: "e1", source: "s1", target: "s2" }], createdAt: new Date(Date.now() - 86400000).toISOString() },
+  { id: "wf2", name: "Daily Sales Report", steps: [{ id: "s3", name: "Schedule", position: { x: 100, y: 100 }, data: { label: "Schedule", nodeType: "trigger.schedule" } } as any, { id: "s4", name: "Query DB", position: { x: 400, y: 100 }, data: { label: "Query DB", nodeType: "action.db" } } as any, { id: "s5", name: "Slack Msg", position: { x: 700, y: 100 }, data: { label: "Slack Msg", nodeType: "action.slack" } } as any], edges: [{ id: "e2", source: "s3", target: "s4" }, { id: "e3", source: "s4", target: "s5" }], schedule: { preset: "daily", label: "Every day at 9 AM", cronExpr: "0 9 * * *", nextRun: new Date(Date.now() + 3600000).toISOString(), lastRun: new Date(Date.now() - 86400000).toISOString(), lastStatus: "success", scheduledAt: new Date(Date.now() - 864000000).toISOString() } },
+  { id: "wf3", name: "Lead Sync", steps: [{ id: "s6", name: "Salesforce", position: { x: 100, y: 100 }, data: { label: "Salesforce", nodeType: "trigger.webhook" } } as any, { id: "s7", name: "Hubspot", position: { x: 400, y: 100 }, data: { label: "Hubspot", nodeType: "action.http" } } as any], edges: [{ id: "e4", source: "s6", target: "s7" }], createdAt: new Date(Date.now() - 172800000).toISOString() }
+];
+
+const MOCK_EXECUTIONS: Execution[] = [
+  { id: "ex1", workflowId: "wf1", workflowName: "User Onboarding", status: "success", startedAt: new Date(Date.now() - 3600000).toISOString(), finishedAt: new Date(Date.now() - 3598000).toISOString(), logs: ["Started execution", "Webhook received", "Email sent successfully"] },
+  { id: "ex2", workflowId: "wf2", workflowName: "Daily Sales Report", status: "failed", startedAt: new Date(Date.now() - 86400000).toISOString(), finishedAt: new Date(Date.now() - 86395000).toISOString(), logs: ["Started execution", "Query DB timeout"], error: "Database timeout" },
+  { id: "ex3", workflowId: "wf3", workflowName: "Lead Sync", status: "running", startedAt: new Date(Date.now() - 60000).toISOString(), logs: ["Started execution", "Fetching leads from Salesforce..."] }
+];
+
 // Workflow API
 export const workflowApi = {
-  list: () => apiFetch<Workflow[]>("/workflows"),
+  list: async () => ({ data: MOCK_WORKFLOWS, error: null as string | null }),
 
-  get: (id: string) => apiFetch<Workflow>(`/workflows/${id}`),
+  get: async (id: string) => ({ data: MOCK_WORKFLOWS.find(w => w.id === id) || null, error: null as string | null }),
 
   create: (data: { name: string; nodes?: any[]; edges?: any[] }) =>
     apiFetch<Workflow>("/workflows", {
@@ -152,7 +164,7 @@ export const workflowApi = {
 
 // Execution API
 export const executionApi = {
-  list: () => apiFetch<Execution[]>("/workflows/executions"),
+  list: async () => ({ data: MOCK_EXECUTIONS, error: null as string | null }),
 };
 
 // Schedule API
